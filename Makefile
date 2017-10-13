@@ -95,6 +95,7 @@ MODULE = $(shell pwd | sed "s/.*\///" ).o
 export MODULE
 endif
 
+
 ifeq ($(PLATFORM),PC)
 PREALLOC = NO
 # Linux 2.6

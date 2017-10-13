@@ -72,7 +72,7 @@ VOID Adhoc_RTMPGetTxTscFromAsic(
 	RTMP_IO_READ32(pAd, offset, &IV);
 	RTMP_IO_READ32(pAd, offset + 4, &EIV);
 
-	*pTxTsc 	= IV & 0x000000ff;
+	*pTxTsc = IV & 0x000000ff;
 	*(pTxTsc+1) = IV & 0x0000ff00;
 	*(pTxTsc+2) = EIV & 0x000000ff;
 	*(pTxTsc+3) = EIV & 0x0000ff00;
@@ -541,7 +541,7 @@ VOID Adhoc_WpaStart4WayHS(
     }
     pAuthenticator = &pEntry->WPA_Authenticator;
 	pBssid = pAd->CommonCfg.Bssid;
-	group_cipher = pAd->StaCfg.GroupCipher;	
+	group_cipher = (UCHAR)pAd->StaCfg.GroupCipher;
 
      /* delete retry timer */
     RTMPCancelTimer(&pAuthenticator->MsgRetryTimer, &Cancelled);
@@ -688,7 +688,7 @@ VOID Adhoc_PeerPairMsg1Action(
 	
 	pCurrentAddr = pAd->CurrentAddress;
 	pmk_ptr = pAd->StaCfg.PMK;
-	group_cipher = pAd->StaCfg.GroupCipher;
+	group_cipher = (UCHAR)pAd->StaCfg.GroupCipher;
 	rsnie_ptr = pAd->StaCfg.RSN_IE;
 	rsnie_len = pAd->StaCfg.RSNIE_Len;
 
@@ -815,7 +815,7 @@ VOID Adhoc_PeerPairMsg2Action(
 
 	pmk_ptr = pAd->StaCfg.PMK;
 	gtk_ptr = pAd->StaCfg.GTK;
-	group_cipher = pAd->StaCfg.GroupCipher;
+	group_cipher = (UCHAR)pAd->StaCfg.GroupCipher;
 
 	default_key = pAd->StaCfg.wdev.DefaultKeyId;
     if (pAd->StaCfg.wdev.AuthMode == Ndis802_11AuthModeWPA2PSK)
@@ -951,7 +951,7 @@ VOID Adhoc_PeerPairMsg3Action(
 		return;
 
 	pCurrentAddr = pAd->CurrentAddress;
-	group_cipher = pAd->StaCfg.GroupCipher;
+	group_cipher = (UCHAR)pAd->StaCfg.GroupCipher;
 		
 	/* Record 802.11 header & the received EAPOL packet Msg3 */
 	pHeader	= (PHEADER_802_11) Elem->Msg;
@@ -1000,9 +1000,9 @@ VOID Adhoc_PeerPairMsg3Action(
 		pEntry->AuthMode == Ndis802_11AuthModeWPA2)
 	{
 		DBGPRINT(RT_DEBUG_TRACE, ("PeerPairMsg3Action: AuthMode(%s) PairwiseCipher(%s) GroupCipher(%s) \n",
-									GetAuthMode(pEntry->AuthMode),
-									GetEncryptType(pEntry->WepStatus),
-									GetEncryptType(group_cipher)));
+					GetAuthMode((CHAR)pEntry->AuthMode),
+					GetEncryptType((CHAR)pEntry->WepStatus),
+					GetEncryptType((CHAR)group_cipher)));
 	}
 
 	/* Init 802.3 header and send out */
@@ -1058,7 +1058,7 @@ VOID Adhoc_PeerPairMsg4Action(
         if (pAuthenticator->WpaState < AS_PTKINIT_NEGOTIATING)
             break;
 
-		group_cipher = pAd->StaCfg.GroupCipher;
+		group_cipher = (UCHAR)pAd->StaCfg.GroupCipher;
  
         /* pointer to 802.11 header */
         pHeader = (PHEADER_802_11)Elem->Msg;
@@ -1113,7 +1113,7 @@ VOID Adhoc_PeerGroupMsg1Action(
 
     pSupplicant = &pEntry->WPA_Supplicant;
 	pCurrentAddr = pAd->CurrentAddress;
-	group_cipher = pAd->StaCfg.GroupCipher;
+	group_cipher = (UCHAR)pAd->StaCfg.GroupCipher;
 	default_key = pAd->StaCfg.wdev.DefaultKeyId;
 	   
 	/* Process Group Message 1 frame. skip 802.11 header(24) & LLC_SNAP header(8) */
@@ -1164,9 +1164,9 @@ VOID Adhoc_PeerGroupMsg1Action(
 #endif /* CONFIG_STA_SUPPORT */
 	
 	DBGPRINT(RT_DEBUG_TRACE, ("PeerGroupMsg1Action: AuthMode(%s) PairwiseCipher(%s) GroupCipher(%s) \n",
-									GetAuthMode(pEntry->AuthMode),
-									GetEncryptType(pEntry->WepStatus),
-									GetEncryptType(group_cipher)));
+				GetAuthMode((CHAR)pEntry->AuthMode),
+				GetEncryptType((CHAR)pEntry->WepStatus),
+				GetEncryptType((CHAR)group_cipher)));
 		
 	/* init header and Fill Packet and send Msg 2 to authenticator */
 	MAKE_802_3_HEADER(Header802_3, pEntry->Addr, pCurrentAddr, EAPOL);	
@@ -1248,10 +1248,10 @@ VOID Adhoc_Wpa4WayComplete(
     pAd->IndicateMediaState = NdisMediaStateConnected;
 
     DBGPRINT(RT_DEBUG_OFF, ("Adhoc_Wpa4WayComplete - WPA2, AuthMode(%d)=%s, WepStatus(%d)=%s, GroupWepStatus(%d)=%s\n\n", 
-							pEntry->AuthMode, GetAuthMode(pEntry->AuthMode), 
-							pEntry->WepStatus, GetEncryptType(pEntry->WepStatus), 
-							pAd->StaCfg.GroupCipher, 
-							GetEncryptType(pAd->StaCfg.GroupCipher)));        
+				pEntry->AuthMode, GetAuthMode((CHAR)pEntry->AuthMode),
+				pEntry->WepStatus, GetEncryptType((CHAR)pEntry->WepStatus),
+				pAd->StaCfg.GroupCipher,
+				GetEncryptType((CHAR)pAd->StaCfg.GroupCipher)));
 }
 
 
